@@ -1,0 +1,61 @@
+{
+	"audios": [
+		{
+			"type": "audio",
+			"key": "collect",
+			"urls": "assets/sound/collect.wav"
+		},
+		{
+			"type": "audio",
+			"key": "hit",
+			"urls": "assets/sound/hit.wav"
+		},
+		{
+			"type": "audio",
+			"key": "lost",
+			"urls": "assets/sound/lost.wav"
+		},
+		{
+			"type": "audio",
+			"key": "level-clear",
+			"urls": "assets/sound/level-clear.wav"
+		},
+		{
+			"type": "audio",
+			"key": "game-over",
+			"urls": "assets/sound/game-over.wav"
+		}
+	],
+	"blocks": [
+		{
+			"type": "image",
+			"key": "block-0",
+			"url": "assets/images/gold.svg"
+		},
+		{
+			"type": "image",
+			"key": "block-1",
+			"url": "assets/images/metal.svg"
+		},
+		{
+			"type": "image",
+			"key": "block-2",
+			"url": "assets/images/blue.svg"
+		},
+		{
+			"type": "image",
+			"key": "block-3",
+			"url": "assets/images/violet.svg"
+		},
+		{
+			"type": "image",
+			"key": "block-4",
+			"url": "assets/images/orange.svg"
+		},
+		{
+			"type": "image",
+			"key": "block-5",
+			"url": "assets/images/red.svg"
+		}
+	]
+}

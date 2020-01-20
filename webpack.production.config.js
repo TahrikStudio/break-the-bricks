@@ -59,8 +59,8 @@ module.exports = {
       hash: true
     }),
     new CopyWebpackPlugin([
-      { from: 'assets', to: 'assets' },
-      { from: 'src/manifest.json', to: './manifest.json' }
+      { from: 'assets', to: 'assets' }//,
+      //{ from: 'src/manifest.json', to: './manifest.json' }
     ]),
     new WorkboxPlugin.GenerateSW({
       clientsClaim: true,
