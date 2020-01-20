@@ -120,7 +120,7 @@ export default class extends Phaser.State {
         this.ball.body.enable = false;
 
         game.input.onDown.addOnce(function () {
-          this.state.restart(true, true, {
+          this.state.restart('Game', false, {
             level: this.level + 1,
             score: this.score,
             lives: this.lives
