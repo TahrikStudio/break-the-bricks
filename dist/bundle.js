@@ -3347,7 +3347,8 @@ exports.default = {
   gameWidth: 320,
   gameHeight: 480,
   MAX_LIVES: 5,
-  LEVEL_COUNT: 6
+  LEVEL_COUNT: 6,
+  BACKGROUND_COUNT: 3
 };
 
 /***/ }),
@@ -11322,10 +11323,11 @@ var _class = function (_Phaser$State) {
       this.load.image('paddle-1', '/assets/images/paddle-1.svg');
       this.load.image('paddle-2', '/assets/images/paddle-2.svg');
 
-      this.load.image('ball', '/assets/images/ball.svg');
+      this.load.image('ball', '/assets/images/ball.png');
       this.load.json('data', '/assets/data/level-map.json');
       this.load.pack('audios', '/assets/data/resource.json');
       this.load.pack('blocks', '/assets/data/resource.json');
+      this.load.pack('backgrounds', '/assets/data/resource.json');
 
       // this.load.onLoadComplete.add(() => {
       //   this.loader.destroy();
@@ -11407,19 +11409,20 @@ var _class = function (_Phaser$State) {
   }, {
     key: 'init',
     value: function init(data) {
-      this.level = (data.level || 0) % _config2.default.LEVEL_COUNT;
+      this.level = (data.level || 1) % _config2.default.LEVEL_COUNT;
       this.lives = data.lives || _config2.default.MAX_LIVES;
       this.score = data.score || 0;
     }
   }, {
     key: 'create',
     value: function create() {
+      this.setBackground();
+
       this.game.physics.startSystem(_phaser2.default.Physics.ARCADE);
       this.ball = this.game.add.sprite(this.game.world.width * 0.5, this.game.world.height * 0.8 - 10, 'ball');
-      this.ball.animations.add('wobble', [0, 1, 0, 2, 0, 1, 0, 2, 0], 24);
       this.ball.anchor.set(0.5);
       this.game.physics.enable(this.ball, _phaser2.default.Physics.ARCADE);
-      this.ball.body.velocity.set(150, -150);
+      this.ball.body.velocity.set(150 * this.level, -150 * this.level);
       this.ball.body.collideWorldBounds = true;
       this.ball.body.bounce.set(1);
       this.game.physics.arcade.checkCollision.down = false;
@@ -11433,7 +11436,7 @@ var _class = function (_Phaser$State) {
       this.paddle.body.immovable = true;
 
       this.scoreText = game.add.text(10, 5, 'Score: ' + this.score, { font: '14px', fill: '#000' });
-      this.levelText = game.add.text(10, 25, 'Level: ' + (this.level + 1), { font: '14px', fill: '#000' });
+      this.levelText = game.add.text(10, 25, 'Level: ' + this.level, { font: '14px', fill: '#000' });
       this.livesText = game.add.text(game.world.width - 10, 5, 'Lives: ' + this.lives, { font: '14px', fill: '#000' });
       this.livesText.anchor.set(1, 0);
 
@@ -11442,6 +11445,11 @@ var _class = function (_Phaser$State) {
       this.lifeLostText.visible = false;
 
       this.initBricks();
+    }
+  }, {
+    key: 'setBackground',
+    value: function setBackground() {
+      this.background = this.add.tileSprite(0, 0, _config2.default.gameWidth, _config2.default.gameHeight, 'texture-' + (this.level % _config2.default.BACKGROUND_COUNT + 1));
     }
   }, {
     key: 'update',
@@ -11454,7 +11462,6 @@ var _class = function (_Phaser$State) {
     key: 'ballHitPaddle',
     value: function ballHitPaddle() {
       game.sound.play('hit');
-      this.ball.animations.play('wobble');
     }
   }, {
     key: 'ballLeaveScreen',
@@ -11479,46 +11486,53 @@ var _class = function (_Phaser$State) {
 
         game.input.onDown.addOnce(function () {
           this.lifeLostText.visible = false;
-          this.ball.body.velocity.set(150, -150);
+          this.ball.body.velocity.set(150 * this.level, -150 * this.level);
         }, this);
       }
     }
   }, {
     key: 'ballHitBrick',
     value: function ballHitBrick(ball, brick) {
-      game.sound.play('collect');
-      this.ball.animations.play('wobble');
-      var killTween = this.add.tween(brick.scale);
-      killTween.to({ x: 0, y: 0 }, 200, _phaser2.default.Easing.Linear.None);
-      killTween.onComplete.addOnce(function () {
-        brick.destroy();
-        var alive_count = 0;
-        for (var i = 0; i < this.bricks.children.length; i += 1) {
-          if (this.bricks.children[i].alive) {
-            alive_count += 1;
+
+      console.log('brick strength - ' + brick.strength);
+      if (brick.strength > 0) {
+        game.sound.play('collect');
+        brick.strength -= 1;
+        brick.loadTexture('block-' + brick.strength);
+      } else {
+        game.sound.play('explode');
+        var killTween = this.add.tween(brick.scale);
+        killTween.to({ x: 0, y: 0 }, 200, _phaser2.default.Easing.Linear.None);
+        killTween.onComplete.addOnce(function () {
+          brick.destroy();
+          var alive_count = 0;
+          for (var i = 0; i < this.bricks.children.length; i += 1) {
+            if (this.bricks.children[i].alive) {
+              alive_count += 1;
+            }
           }
-        }
-        console.log(alive_count);
+          console.log(alive_count);
 
-        if (alive_count == 0) {
-          game.sound.play('level-clear');
-          this.success = this.game.add.text(this.game.world.width * 0.5, this.game.world.height * 0.5, "Level Completed");
-          this.success.anchor.set(0.5);
-          this.proceed = this.game.add.text(this.game.world.width * 0.5, this.game.world.height * 0.5 + 20, "Tap to proceed..", { font: '18px Arial' });
-          this.proceed.anchor.set(0.5);
+          if (alive_count == 0) {
+            game.sound.play('level-clear');
+            this.success = this.game.add.text(this.game.world.width * 0.5, this.game.world.height * 0.5, "Level Completed");
+            this.success.anchor.set(0.5);
+            this.proceed = this.game.add.text(this.game.world.width * 0.5, this.game.world.height * 0.5 + 20, "Tap to proceed..", { font: '18px Arial' });
+            this.proceed.anchor.set(0.5);
 
-          this.ball.body.enable = false;
+            this.ball.body.enable = false;
 
-          game.input.onDown.addOnce(function () {
-            this.state.restart('Game', false, {
-              level: this.level + 1,
-              score: this.score,
-              lives: this.lives
-            });
-          }, this);
-        }
-      }, this);
-      killTween.start();
+            game.input.onDown.addOnce(function () {
+              this.state.restart('Game', false, {
+                level: this.level + 1,
+                score: this.score,
+                lives: this.lives
+              });
+            }, this);
+          }
+        }, this);
+        killTween.start();
+      }
 
       this.score += 10;
       this.scoreText.setText('Score: ' + this.score);
@@ -11539,15 +11553,19 @@ var _class = function (_Phaser$State) {
       var jsonData = this.cache.getJSON('data');
 
       this.bricks = this.add.group();
-      for (var r = 0; r < jsonData.levels[this.level + 1].layout.length; r++) {
-        for (var c = 0; c < jsonData.levels[this.level + 1].layout[r].length; c++) {
+      for (var r = 0; r < jsonData.levels[this.level].layout.length; r++) {
+        for (var c = 0; c < jsonData.levels[this.level].layout[r].length; c++) {
           var brickX = c * (this.brickInfo.width + this.brickInfo.padding) + this.brickInfo.offset.left;
           var brickY = r * (this.brickInfo.height + this.brickInfo.padding) + this.brickInfo.offset.top;
-          console.log(brickX, brickY);
-          var newBrick = this.game.add.sprite(brickX, brickY, 'block-' + jsonData.levels[this.level + 1].layout[r][c]);
+
+          var strength = jsonData.levels[this.level].layout[r][c];
+          if (strength == -1) continue;
+
+          var newBrick = this.game.add.sprite(brickX, brickY, 'block-' + jsonData.levels[this.level].layout[r][c]);
           this.game.physics.enable(newBrick, _phaser2.default.Physics.ARCADE);
           newBrick.body.immovable = true;
           newBrick.anchor.set(0.5);
+          newBrick.strength = strength;
           this.bricks.add(newBrick);
         }
       }
@@ -11640,7 +11658,7 @@ var _class = function (_Phaser$State) {
     key: 'startGame',
     value: function startGame() {
       this.startButton.destroy();
-      this.state.start('Game', true, false, { level: 0 });
+      this.state.start('Game', true, false, { level: 1 });
     }
   }]);
 

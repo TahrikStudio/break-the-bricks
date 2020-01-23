@@ -24,38 +24,60 @@
 			"type": "audio",
 			"key": "game-over",
 			"urls": "assets/sound/game-over.wav"
+		},
+		{
+			"type": "audio",
+			"key": "explode",
+			"urls": "assets/sound/explode.mp3"
 		}
 	],
 	"blocks": [
 		{
 			"type": "image",
 			"key": "block-0",
-			"url": "assets/images/gold.svg"
+			"url": "assets/images/block-0.png"
 		},
 		{
 			"type": "image",
 			"key": "block-1",
-			"url": "assets/images/metal.svg"
+			"url": "assets/images/block-1.png"
 		},
 		{
 			"type": "image",
 			"key": "block-2",
-			"url": "assets/images/blue.svg"
+			"url": "assets/images/block-2.png"
 		},
 		{
 			"type": "image",
 			"key": "block-3",
-			"url": "assets/images/violet.svg"
+			"url": "assets/images/block-3.png"
 		},
 		{
 			"type": "image",
 			"key": "block-4",
-			"url": "assets/images/orange.svg"
+			"url": "assets/images/block-4.png"
 		},
 		{
 			"type": "image",
 			"key": "block-5",
 			"url": "assets/images/red.svg"
+		}
+	],
+	"backgrounds": [
+		{
+			"type": "image",
+			"key": "texture-1",
+			"url": "assets/images/texture-1.jpg"
+		},
+		{
+			"type": "image",
+			"key": "texture-2",
+			"url": "assets/images/texture-2.jpg"
+		},
+		{
+			"type": "image",
+			"key": "texture-3",
+			"url": "assets/images/texture-3.jpg"
 		}
 	]
 }

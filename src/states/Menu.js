@@ -18,7 +18,7 @@ export default class extends Phaser.State {
 
   startGame() {
     this.startButton.destroy();
-    this.state.start('Game', true, false, {level: 0})
+    this.state.start('Game', true, false, {level: 1})
   }
 
 }

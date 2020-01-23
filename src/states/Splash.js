@@ -17,10 +17,11 @@ export default class extends Phaser.State {
     this.load.image('paddle-1', '/assets/images/paddle-1.svg');
     this.load.image('paddle-2', '/assets/images/paddle-2.svg');
     
-    this.load.image('ball', '/assets/images/ball.svg');
+    this.load.image('ball', '/assets/images/ball.png');
     this.load.json('data', '/assets/data/level-map.json');
     this.load.pack('audios', '/assets/data/resource.json');
     this.load.pack('blocks', '/assets/data/resource.json');
+    this.load.pack('backgrounds', '/assets/data/resource.json');
 
     // this.load.onLoadComplete.add(() => {
     //   this.loader.destroy();
